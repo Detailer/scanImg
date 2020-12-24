@@ -1,0 +1,14 @@
+pre process
+	-to greyscale and blur
+	-get edges using canny
+	-dilate by creating a kernel of 1 in 5x5
+	-errode
+	-return threshold
+
+get contours
+	- for all contours, find rectangle
+	with maximum area 
+
+warp
+	-Warp around the biggest contour (make sure in 
+	increasin order the points)
