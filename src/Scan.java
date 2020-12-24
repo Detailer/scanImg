@@ -38,7 +38,16 @@ public class Scan{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         String File = "./src/img/image-2.jpg";
-        Mat src = Imgcodecs.imread(File);
+        Mat orig = Imgcodecs.imread(File);
+
+        Mat src = new Mat();
+        Size newsz = new Size(0, 0);
+        System.out.println(orig.size().width);
+        double scale = (float) 500 / orig.size().width;
+        Imgproc.resize(orig, src, newsz, scale, scale, Imgproc.INTER_AREA);
+        double h = src.size().height;
+        double w = src.size().width;
+        HighGui.imshow("Resized", src);
 
         Mat grey = new Mat();
         Imgproc.cvtColor(src, grey, Imgproc.COLOR_RGB2GRAY);
@@ -63,7 +72,7 @@ public class Scan{
             double arc = Imgproc.arcLength(contourFloat, true) * 0.02;
             MatOfPoint2f approx = new MatOfPoint2f();
             Imgproc.approxPolyDP(contourFloat, approx, arc, true);
-            if (approx.total() == 4) {
+            if (approx.total() == 4 && Imgproc.contourArea(contour) > 5000.0) {
                 found = true;
                 rect_contour.add(contour);
                 Scalar color = new Scalar(189, 145, 35);
@@ -116,9 +125,9 @@ public class Scan{
             );
             MatOfPoint2f destination = new MatOfPoint2f(
                     new Point(0, 0),
-                    new Point(432 - 1, 0),
-                    new Point(0, 632 - 1),
-                    new Point(432 - 1, 632 - 1)
+                    new Point(w - 1, 0),
+                    new Point(0, h - 1),
+                    new Point(w - 1, h - 1)
             );
 
             Mat warpMat = Imgproc.getPerspectiveTransform(source, destination);
